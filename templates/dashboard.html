@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - Access Control System{% endblock %}
+{% block page_title %}Dashboard{% endblock %}
+{% block page_sub %}System Overview{% endblock %}
+
+{% block content %}
+
+<div class="stat-grid">
+  <div class="stat-card success">
+    <div class="stat-label">Active Users</div>
+    <div class="stat-value">{{ total_users }}</div>
+  </div>
+  <div class="stat-card danger">
+    <div class="stat-label">Failed Logins Today</div>
+    <div class="stat-value">{{ failed_today }}</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-label">Total Roles</div>
+    <div class="stat-value">{{ total_roles }}</div>
+  </div>
+</div>
+
+<div class="panel">
+  <div class="panel-header">
+    <span class="panel-title">Recent Activity</span>
+  </div>
+  <table>
+    <thead>
+      <tr>
+        <th>Time</th>
+        <th>User</th>
+        <th>Action</th>
+        <th>IP Address</th>
+        <th>Status</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for log in recent_logs %}
+      <tr>
+        <td style="font-family:var(--mono); font-size:12px; color:var(--text-muted);">
+          {{ log.logged_at.strftime('%Y-%m-%d %H:%M:%S') }}
+        </td>
+        <td style="font-family:var(--mono); font-size:12px;">{{ log.username }}</td>
+        <td>{{ log.action }}</td>
+        <td style="font-family:var(--mono); font-size:12px; color:var(--text-muted);">{{ log.ip_address }}</td>
+        <td>
+          {% if log.status == 'success' %}
+            <span class="badge badge-success">SUCCESS</span>
+          {% elif log.status == 'failed' %}
+            <span class="badge badge-danger">FAILED</span>
+          {% else %}
+            <span class="badge badge-warning">WARNING</span>
+          {% endif %}
+        </td>
+      </tr>
+      {% else %}
+      <tr>
+        <td colspan="5" style="text-align:center; color:var(--text-muted); padding:32px; font-family:var(--mono); font-size:12px;">
+          No activity recorded yet.
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+{% endblock %}

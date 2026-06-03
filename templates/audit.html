@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+
+{% block title %}Audit Log - Access Control System{% endblock %}
+{% block page_title %}Audit Log{% endblock %}
+{% block page_sub %}Full Activity History{% endblock %}
+
+{% block content %}
+
+<div class="panel">
+  <div class="panel-header">
+    <span class="panel-title">Activity Log</span>
+    <span style="font-family:var(--mono); font-size:11px; color:var(--text-muted);">Last 100 entries</span>
+  </div>
+  <table>
+    <thead>
+      <tr>
+        <th>Timestamp</th>
+        <th>Username</th>
+        <th>Action</th>
+        <th>IP Address</th>
+        <th>Status</th>
+        <th>Details</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for log in logs %}
+      <tr>
+        <td style="font-family:var(--mono); font-size:11px; color:var(--text-muted); white-space:nowrap;">
+          {{ log.logged_at.strftime('%Y-%m-%d %H:%M:%S') }}
+        </td>
+        <td style="font-family:var(--mono); font-size:12px; font-weight:600; color:#fff;">{{ log.username }}</td>
+        <td style="font-size:12px; font-weight:600;">{{ log.action }}</td>
+        <td style="font-family:var(--mono); font-size:11px; color:var(--text-muted);">{{ log.ip_address }}</td>
+        <td>
+          {% if log.status == 'success' %}
+            <span class="badge badge-success">SUCCESS</span>
+          {% elif log.status == 'failed' %}
+            <span class="badge badge-danger">FAILED</span>
+          {% else %}
+            <span class="badge badge-warning">WARNING</span>
+          {% endif %}
+        </td>
+        <td style="font-family:var(--mono); font-size:11px; color:var(--text-muted);">
+          {{ log.details or '-' }}
+        </td>
+      </tr>
+      {% else %}
+      <tr>
+        <td colspan="6" style="text-align:center; color:var(--text-muted); padding:32px; font-family:var(--mono); font-size:12px;">
+          No log entries found.
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+{% endblock %}
