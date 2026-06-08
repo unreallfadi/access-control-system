@@ -1,0 +1,123 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<div class="page-header">
+    <h1>DB Privilege Management</h1>
+    <p>Grant and revoke MySQL database privileges</p>
+</div>
+
+<!-- Grant form -->
+<div class="card">
+    <h3>Grant Privilege</h3>
+    <form method="POST" action="/privileges/grant"
+          style="display:flex; gap:10px; flex-wrap:wrap; align-items:flex-end;">
+        <div>
+            <label style="font-size:11px; color:#666; display:block; margin-bottom:4px;">DB User</label>
+            <select name="db_user" id="grant_user">
+                {% for u in db_users %}
+                <option value="{{ u.user }}">{{ u.user }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div>
+            <label style="font-size:11px; color:#666; display:block; margin-bottom:4px;">Host</label>
+            <select name="db_host" id="grant_host">
+                {% for u in db_users %}
+                <option value="{{ u.host }}">{{ u.host }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div>
+            <label style="font-size:11px; color:#666; display:block; margin-bottom:4px;">Privilege</label>
+            <select name="privilege">
+                <option>SELECT</option>
+                <option>INSERT</option>
+                <option>UPDATE</option>
+                <option>DELETE</option>
+                <option>ALL PRIVILEGES</option>
+            </select>
+        </div>
+        <div>
+            <label style="font-size:11px; color:#666; display:block; margin-bottom:4px;">Database</label>
+            <select name="database">
+                {% for db in databases %}
+                <option value="{{ db.schema_name }}">{{ db.schema_name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div>
+            <label style="font-size:11px; color:#666; display:block; margin-bottom:4px;">Table (leave * for all)</label>
+            <input type="text" name="table" placeholder="*" value="*" style="width:100px;">
+        </div>
+        <button type="submit" class="btn btn-primary">Grant</button>
+    </form>
+</div>
+
+<!-- Revoke form -->
+<div class="card">
+    <h3>Revoke Privilege</h3>
+    <form method="POST" action="/privileges/revoke"
+          style="display:flex; gap:10px; flex-wrap:wrap; align-items:flex-end;">
+        <div>
+            <label style="font-size:11px; color:#666; display:block; margin-bottom:4px;">DB User</label>
+            <select name="db_user">
+                {% for u in db_users %}
+                <option value="{{ u.user }}">{{ u.user }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div>
+            <label style="font-size:11px; color:#666; display:block; margin-bottom:4px;">Host</label>
+            <select name="db_host">
+                {% for u in db_users %}
+                <option value="{{ u.host }}">{{ u.host }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div>
+            <label style="font-size:11px; color:#666; display:block; margin-bottom:4px;">Privilege</label>
+            <select name="privilege">
+                <option>SELECT</option>
+                <option>INSERT</option>
+                <option>UPDATE</option>
+                <option>DELETE</option>
+                <option>ALL PRIVILEGES</option>
+            </select>
+        </div>
+        <div>
+            <label style="font-size:11px; color:#666; display:block; margin-bottom:4px;">Database</label>
+            <select name="database">
+                {% for db in databases %}
+                <option value="{{ db.schema_name }}">{{ db.schema_name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div>
+            <label style="font-size:11px; color:#666; display:block; margin-bottom:4px;">Table</label>
+            <input type="text" name="table" placeholder="*" value="*" style="width:100px;">
+        </div>
+        <button type="submit" class="btn btn-danger">Revoke</button>
+    </form>
+</div>
+
+<!-- Current DB users -->
+<div class="card">
+    <h3>MySQL Database Users</h3>
+    <table>
+        <thead>
+            <tr><th>User</th><th>Host</th></tr>
+        </thead>
+        <tbody>
+            {% for u in db_users %}
+            <tr>
+                <td><strong>{{ u.user }}</strong></td>
+                <td style="color:#666;">{{ u.host }}</td>
+            </tr>
+            {% else %}
+            <tr><td colspan="2" style="color:#666;">No DB users found.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% endblock %}
