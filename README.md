@@ -1,32 +1,38 @@
-# Multi-User Database Access Control System
+# User Authentication & Access Control System
 
-A DBA-grade database access control system built with MySQL, Python Flask, and HTML.
-Manages system users, database-level privileges, audit logging, and generates exportable permissions reports.
+> Role-based access control system with login auditing, built with Python Flask and MySQL.
+> Demonstrates secure authentication design, privilege management, and audit trail implementation.
+
+---
+
+## Overview
+
+This project simulates a real-world user management system with three access levels.
+Every login attempt and admin action is logged to a full audit trail stored in MySQL.
 
 ---
 
 ## Features
 
-- Secure login with bcrypt password hashing
-- Password policy enforcement (length, number, special character)
-- Role-based access control (Admin, Editor, Viewer)
-- User management — create, enable/disable, reset passwords
-- **MySQL GRANT / REVOKE privilege management**
-- **Permissions report** (schema-level and table-level)
-- **CSV export** of full permissions report
-- **Database health stats** — table sizes and row counts
-- Full audit log of every login, action, and privilege change
+| Feature | Description |
+|---|---|
+| Secure Login | bcrypt password hashing, no plaintext storage |
+| Role-Based Access | Admin, Editor, and Viewer permission levels |
+| User Management | Create, enable, and disable user accounts |
+| Audit Log | Every login attempt and admin action is recorded |
+| Session Control | Flask session management with login/logout flow |
+| Dark Dashboard | Clean dark UI with no external CSS framework |
 
 ---
 
 ## Tech Stack
 
-| Layer    | Technology           |
-|----------|----------------------|
-| Backend  | Python, Flask        |
-| Database | MySQL                |
-| Frontend | HTML5, CSS3          |
-| Security | bcrypt, session auth |
+| Layer | Technology |
+|---|---|
+| Backend | Python 3, Flask |
+| Database | MySQL 8.0 |
+| Auth | bcrypt, Flask sessions |
+| Frontend | HTML5, CSS3 (dark theme) |
 
 ---
 
@@ -34,100 +40,105 @@ Manages system users, database-level privileges, audit logging, and generates ex
 
 ```
 access-control-system/
-├── app.py                  # Flask application — all routes and logic
-├── setup_admin.py          # One-time admin account setup
-├── requirements.txt
+├── app.py              # Flask application and route handlers
+├── setup_admin.py      # One-time admin account setup script
+├── requirements.txt    # Python dependencies
+├── .env.example        # Environment variable template
+├── .gitignore
 ├── database/
-│   ├── schema.sql          # Table definitions and indexes
-│   └── seed.sql            # Default roles and permissions
+│   ├── schema.sql      # Table definitions and constraints
+│   └── seed.sql        # Default roles and initial data
 └── templates/
-    ├── base.html           # Shared dark layout and sidebar
-    ├── login.html          # Login page
-    ├── dashboard.html      # Overview, DB health, recent activity
-    ├── users.html          # User management
-    ├── privileges.html     # MySQL GRANT / REVOKE
-    ├── report.html         # Permissions report with CSV export
-    └── audit.html          # Full audit log
+    ├── base.html       # Shared layout with sidebar navigation
+    ├── login.html      # Login page
+    ├── dashboard.html  # Overview with KPIs and recent activity
+    ├── users.html      # User management (admin only)
+    └── audit.html      # Full audit log viewer (admin only)
 ```
 
 ---
 
 ## Database Schema
 
-| Table       | Purpose                                    |
-|-------------|--------------------------------------------|
-| roles       | Role definitions (admin, editor, viewer)   |
-| users       | System accounts linked to roles            |
-| permissions | Resource access per role                   |
-| audit_log   | Every login, action, and privilege change  |
+| Table | Purpose |
+|---|---|
+| `roles` | Permission level definitions |
+| `users` | System accounts with role assignment |
+| `permissions` | What each role is allowed to access |
+| `audit_log` | Full record of every login and admin action |
 
 ---
 
-## Getting Started
+## Setup
 
-### 1. Install dependencies
+### 1. Clone the repository
+
+```bash
+git clone https://github.com/unreallfadi/access-control-system.git
+cd access-control-system
+```
+
+### 2. Install dependencies
 
 ```bash
 pip install -r requirements.txt
 ```
 
-### 2. Create the database
+### 3. Configure environment variables
+
+```bash
+cp .env.example .env
+# Edit .env and set your MySQL password and secret key
+```
+
+### 4. Create the database
 
 ```bash
 mysql -u root -p < database/schema.sql
 mysql -u root -p < database/seed.sql
 ```
 
-### 3. Configure database connection
-
-Edit `app.py`:
-
-```python
-app.config['MYSQL_PASSWORD'] = 'your_mysql_password'
-```
-
-### 4. Create admin account
+### 5. Set the admin password
 
 ```bash
 python setup_admin.py
 ```
 
-### 5. Run the application
+### 6. Run the application
 
 ```bash
 python app.py
 ```
 
-Open: [http://localhost:5000](http://localhost:5000)
+Open in browser: `http://localhost:5000`
 
 ---
 
-## API Routes
+## Access Roles
 
-| Route                              | Method | Access | Description                    |
-|------------------------------------|--------|--------|--------------------------------|
-| `/`                                | GET    | All    | Redirect to dashboard or login |
-| `/login`                           | GET/POST | All  | Login page                     |
-| `/logout`                          | GET    | Auth   | End session                    |
-| `/dashboard`                       | GET    | Auth   | Overview and DB health         |
-| `/users`                           | GET    | Admin  | User list                      |
-| `/users/create`                    | POST   | Admin  | Create new user                |
-| `/users/toggle/<id>`               | POST   | Admin  | Enable/disable user            |
-| `/users/reset-password/<id>`       | POST   | Admin  | Reset user password            |
-| `/privileges`                      | GET    | Admin  | Privilege management page      |
-| `/privileges/grant`                | POST   | Admin  | GRANT privilege                |
-| `/privileges/revoke`               | POST   | Admin  | REVOKE privilege               |
-| `/report`                          | GET    | Admin  | Permissions report             |
-| `/report/export`                   | GET    | Admin  | Download CSV report            |
-| `/audit`                           | GET    | Admin  | Full audit log                 |
+| Role | Permissions |
+|---|---|
+| Admin | Full access: user management, audit log, dashboard |
+| Editor | Dashboard access only |
+| Viewer | Dashboard access only (read-only) |
+
+---
+
+## Skills Demonstrated
+
+- Secure password hashing with bcrypt
+- Role-based access control (RBAC) design
+- MySQL schema design with foreign key constraints
+- Flask session management and route decorators
+- Audit logging for compliance and traceability
+- Environment variable management for sensitive config
 
 ---
 
 ## Author
 
-**Fadi**
+**Fadi Amir**
+Data Analyst | SQL Developer | Database Design
 
-SQL Developer | Database Design | Web Design
-
-[![LinkedIn](https://img.shields.io/badge/LinkedIn-Connect-blue)](https://linkedin.com)
-[![GitHub](https://img.shields.io/badge/GitHub-Follow-black)](https://github.com)
+[![GitHub](https://img.shields.io/badge/GitHub-unreallfadi-181717?style=flat&logo=github)](https://github.com/unreallfadi)
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-fadi--amir-0A66C2?style=flat&logo=linkedin)](https://www.linkedin.com/in/unreallfadi)
